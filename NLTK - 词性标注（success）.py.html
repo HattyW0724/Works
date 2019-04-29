@@ -1,0 +1,77 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+# In[28]:
+
+
+# X 
+import sys
+import codecs
+import nltk
+from nltk.corpus import stopwords
+from nltk.corpus import brown
+import numpy as np
+
+text = open('/Users/wangqile/mobile_addiction_purewords.txt','rb',encoding='utf-8',errors='ignore').read()
+words = nltk.word_tokenize(text.decode('utf-8').lower())
+english_punctuations = [',', '.', ':', ';', '?', '(', ')', '[', ']', '&', '!', '*', '@', '#', '$', '%','{','}']
+
+symbols=["\\",'-','``']
+
+default_stopwords = set(stopwords.words('english'))
+stopwords_file = './stopwords.txt'
+custom_stopwords = set(codecs.open(stopwords_file, 'r', 'utf-8').read().splitlines())
+english_stops = default_stopwords | custom_stopwords
+
+words = [word for word in words if len(word) > 1]
+words = [word for word in words if word not in symbols]
+words = [word for word in words if word not in english_punctuations]
+words = [word for word in words if not word.isnumeric()]
+words = [word for word in words if word not in english_stops]
+
+fdist = nltk.FreqDist(words)
+for word, frequency in fdist.most_common(200):
+    print(u'{};{}'.format(word, frequency))
+
+
+# In[104]:
+
+
+import csv
+import pandas as pd
+
+with open('wf2.csv','r') as csvfile:  # -> 建立csv ; csvfile 为自拟名
+    reader = csv.reader(csvfile)
+    rows = [row for row in reader]
+    columns = [row[1] for row in rows]
+
+
+# In[115]:
+
+
+import nltk
+
+text = '\t'.join(columns)
+word = nltk.word_tokenize(text)
+wt = nltk.pos_tag(word) #词性标注
+
+
+# In[117]:
+
+
+header=['keywords','wordtag'] 
+wordtags = pd.DataFrame(columns=header, data=wt) 
+wordtags.to_csv('/Users/wangqile/wt.csv',encoding = 'utf-8') 
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+
+

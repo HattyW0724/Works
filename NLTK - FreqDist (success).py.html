@@ -1,0 +1,68 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+# In[119]:
+
+
+import sys
+import codecs
+import nltk
+from nltk.corpus import stopwords
+
+default_stopwords = set(nltk.corpus.stopwords.words('english'))
+
+stopwords_file = './stopwords.txt'
+custom_stopwords = set(codecs.open(stopwords_file, 'r', 'utf-8').read().splitlines())
+
+all_stopwords = default_stopwords | custom_stopwords
+
+
+# In[127]:
+
+
+text = open('keywords_mb+.txt',encoding='utf-8',errors='ignore').read()
+
+words = nltk.word_tokenize(text)
+words = [word for word in words if len(word) > 1]
+words = [word for word in words if not word.isnumeric()]
+words = [word.lower() for word in words]
+words = [word for word in words if word not in all_stopwords]
+
+
+# In[128]:
+
+
+fdist = nltk.FreqDist(words)
+for word, frequency in fdist.most_common(200):
+    print(u'{};{}'.format(word, frequency))
+
+
+# In[135]:
+
+
+fq = fdist.most_common(200)
+print(fq)
+
+
+# In[137]:
+
+
+import pandas as pd
+
+name = ['keywords','frequency']
+wordfrequency = pd.DataFrame(columns=name, data=fq)
+print(wordfrequency)
+wordfrequency.to_csv('/Users/wangqile/wf.csv', encoding='utf-8')
+
+
+# In[149]:
+
+
+
+
+
+# In[ ]:
+
+
+
+
